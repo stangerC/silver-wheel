@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSources>
+    <dataSource>
+        <name>okms</name>
+        <userName>db2admin</userName>
+        <password>helloworld</password>
+        <url>jdbc:db2://10.140.15.164:50000/OKMSDEV</url>
+        <driverClass>com.ibm.db2.jcc.DB2Driver</driverClass>
+    </dataSource>
+    <dataSource>
+        <name>nkms</name>
+        <userName>db2admin</userName>
+        <password>helloworld</password>
+        <url>jdbc:db2://10.140.15.84:50000/KMSDB3</url>
+        <driverClass>com.ibm.db2.jcc.DB2Driver</driverClass>
+    </dataSource>
+</dataSources>
