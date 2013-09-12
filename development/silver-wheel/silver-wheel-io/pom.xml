@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>silver-wheel</artifactId>
+    <groupId>com.silver.wheel</groupId>
+    <version>0.0.1</version>
+  </parent>
+  <groupId>com.silver.wheel.io</groupId>
+  <artifactId>silver-wheel-io</artifactId>  
+  <name>silver-wheel-io</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.silver.wheel.lang</groupId>
+      <artifactId>silver-wheel-lang</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+  </dependencies>
+</project>
