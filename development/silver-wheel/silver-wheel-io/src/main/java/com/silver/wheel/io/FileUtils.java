@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -366,16 +367,20 @@ public class FileUtils {
         return bytes;
     }
 
-    public static void write(final String data, File file) {      
-        try {        
+    public static void write(final String data, File file) {
+        try {
             StreamUtils.writeAndClose(data, new FileWriter(file));
         } catch (IOException ex) {
             throw new CodedRuntimeException(ex);
         }
-    }        
+    }
 
-    public static void write(final byte[] data, File file) throws IOException {
-        StreamUtils.write(data, new FileOutputStream(file));
+    public static void write(final byte[] data, File file) {
+        try {
+            StreamUtils.writeAndClose(data, new FileOutputStream(file));
+        } catch (IOException ex) {
+            throw new CodedRuntimeException(ex);
+        }
     }
 
     /**
@@ -387,6 +392,14 @@ public class FileUtils {
     public static void write(InputStream is, File file) throws FileNotFoundException, IOException {
         checkForWrite(is, file);
         StreamUtils.copy(is, new BufferedOutputStream(new FileOutputStream(file)));
+    }
+    
+    public static void append(String s, File file){
+        try {
+            StreamUtils.appendAndClosed(s, new FileWriter(file, true));
+        } catch (IOException ex) {
+            throw new CodedRuntimeException(ex);
+        }
     }
 
     private static <T> void checkForWrite(T data, File dest) {
@@ -418,25 +431,64 @@ public class FileUtils {
         //资源不存在则创建
         if (classLoader.getResource(resourceName) == null) {
             URL url = classLoader.getResource("");
-            System.out.println(url.getPath());
+            //资源名称不包含“/”，说明资源不包含目录，可以直接创建
             if (resourceName.indexOf("/") == -1) {
                 write("", new File(url.getPath() + resourceName));
             } else {
+                //资源名称最后不为“/”，说明资源是文件而不是目录
                 if (resourceName.lastIndexOf("/") != resourceName.length() - 1) {
-                    File file = new File(url.getPath() + resourceName.substring(0, 
-                            resourceName.lastIndexOf("/"))); 
-                    if(!file.mkdirs()) {
+                    File file = new File(url.getPath() + resourceName.substring(0,
+                            resourceName.lastIndexOf("/")));
+                    if (!file.mkdirs()) {
                         throw new CodedRuntimeException("can't create dir:" + file.getAbsolutePath());
                     }
                     file = new File(url.getPath() + resourceName);
                     write("", file);
-                } else {                    
+                } else { //资源名称最后是“/”，说明资源是目录，直接创建                 
                     File file = new File(url.getPath() + resourceName);
-                    if(!file.mkdirs()) {
+                    if (!file.mkdirs()) {
                         throw new CodedRuntimeException("can't create dir:" + file.getAbsolutePath());
-                    }                  
+                    }
                 }
             }
+        }
+    }
+
+    public static void deleteResource(final String resourceName, boolean deleteDir) {
+        String resourceNameUsed = resourceName;
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        //资源不存在则创建
+        if (classLoader.getResource(resourceNameUsed) != null) {
+            URL url = classLoader.getResource("");
+            //资源名称最后不为“/”，说明资源是文件而不是目录
+            if (resourceNameUsed.lastIndexOf("/") != resourceNameUsed.length() - 1) {
+                new File(url.getPath() + resourceNameUsed).delete();
+            }
+            //需要删除目录，检查资源中是否包含目录
+            if (deleteDir) {
+                while (resourceNameUsed.indexOf("/") != -1) {
+                    resourceNameUsed = resourceNameUsed.substring(0, resourceNameUsed.lastIndexOf("/"));
+                    new File(url.getPath() + resourceNameUsed).delete();
+                }
+            }
+        }
+    }
+    
+    public static void writeToResource(String s, String resourceName) {
+        createResource(resourceName);
+        try {
+            write(s, new File(Thread.currentThread().getContextClassLoader().getResource(resourceName).toURI()));
+        } catch (URISyntaxException ex) {
+            throw new CodedRuntimeException(ex);
+        }
+    }
+    
+    public static void appendToResource(String s, String resourceName) {
+        createResource(resourceName);
+        try {
+            append(s, new File(Thread.currentThread().getContextClassLoader().getResource(resourceName).toURI()));
+        } catch (URISyntaxException ex) {
+            throw new CodedRuntimeException(ex);
         }
     }
 }

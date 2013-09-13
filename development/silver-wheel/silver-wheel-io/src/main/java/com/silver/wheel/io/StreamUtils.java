@@ -88,4 +88,15 @@ public class StreamUtils {
         write(data, writer);
         writer.close();
     }
+    
+    public static void append(String data, Writer writer) throws IOException {
+        checkNotNull(data);
+        checkNotNull(writer);
+        writer.append(data);
+    }
+    
+    public static void appendAndClosed(String data, Writer writer) throws IOException {
+        append(data, writer);
+        writer.close();
+    }
 }
