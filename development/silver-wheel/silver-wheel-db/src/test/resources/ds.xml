@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSources>        
-    <!--
+<dataSources>            
     <dataSource>
-        <name>okms</name>
+        <name>okms-qa</name>
         <userName>db2admin</userName>
         <password>helloworld</password>
         <url>jdbc:db2://10.140.15.164:50000/OKMSDEV</url>
         <driverClass>com.ibm.db2.jcc.DB2Driver</driverClass>
-    </dataSource>
-    -->
+    </dataSource>    
     <dataSource>
         <name>nkms-qa</name>
-        <userName>db2admin</userName>
-        <password>helloworld</password>
-        <url>jdbc:db2://10.140.15.84:50000/KMSDB3</url>
+        <userName>db2inst1</userName>
+        <password>amway123</password>
+        <url>jdbc:db2://10.140.15.84:50000/KMSDEV</url>
         <driverClass>com.ibm.db2.jcc.DB2Driver</driverClass>
     </dataSource>    
 </dataSources>

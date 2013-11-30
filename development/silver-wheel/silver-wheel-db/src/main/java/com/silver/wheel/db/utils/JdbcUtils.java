@@ -79,6 +79,18 @@ public class JdbcUtils {
             //Todo:增加日志输出
         }
     }
+    
+    public static void close(ResultSet rs, PreparedStatement pst, Connection conn) {
+        try {
+            closeResultSet(rs);
+        } finally {
+            try{
+                closePreparedStatement(pst);
+            } finally {
+                closeConnection(conn);
+            }
+        }                        
+    }
     /**
      * 静默关闭结果集、预编译预计和数据库连接。内部没有直接调用各个Silently后缀方法是考虑到这些
      * 方法的日志输出也可能抛出异常，因此需要多个try-catch-finally块连续关闭，即使中间抛出异常

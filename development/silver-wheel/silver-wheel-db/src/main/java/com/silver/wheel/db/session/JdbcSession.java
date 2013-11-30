@@ -45,21 +45,35 @@ public class JdbcSession {
         } catch (SQLException ex) {            
             throw new DBRuntimeException(ex);
         }finally {
-            JdbcUtils.closeResultSetSilently(rs);
-            JdbcUtils.closePreparedStatementSilently(pst);            
+            JdbcUtils.close(rs, pst, null);
         }                
     }
     
     public int update(String sql) {
+        return update(sql, null, null);
+    }
+    /**
+     * 执行更新（包括删除、插入）语句
+     * @param sql
+     * @param params
+     * @param handler
+     * @return 
+     */
+    public int update(String sql, Object[] params, ParameterHandler handler) {
         PreparedStatement pst = null;
         try {
             pst = conn.prepareStatement(sql);
+            
+            if(params != null && params.length > 0) {
+                handler.setParameter(pst, params);
+            }
+            
             int result = pst.executeUpdate();                                                       
             return result;
         } catch (SQLException ex) {            
             throw new DBRuntimeException(ex);
         }finally {
-            JdbcUtils.closePreparedStatementSilently(pst);
+            JdbcUtils.closePreparedStatement(pst);
         }   
     }
     
@@ -73,7 +87,7 @@ public class JdbcSession {
         } catch (SQLException ex) {            
             throw new DBRuntimeException(ex);
         }finally {
-            JdbcUtils.closePreparedStatementSilently(pst);
+            JdbcUtils.closePreparedStatement(pst);
         }   
     }
     
